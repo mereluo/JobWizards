@@ -1,6 +1,0 @@
-INDEX VERSION 1.4+/Users/meredith/eclipse-workspace/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
-298905026.index
-79131623.index
-362151985.index
-2368924396.index
-1828994913.index
