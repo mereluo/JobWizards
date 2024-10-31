@@ -1,44 +1,49 @@
 package blog.dal;
 
+import blog.model.Companies;
+import blog.model.Jobs;
 import blog.model.Locations;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class LocationsDao {
+public class JobsDao {
     protected ConnectionManager connectionManager;
+    private static JobsDao instance = null;
 
-    private static LocationsDao instance = null;
-
-    protected LocationsDao() {
+    protected JobsDao() {
         connectionManager = new ConnectionManager();
     }
 
-    public static LocationsDao getInstance() {
+    public static JobsDao getInstance() {
         if(instance == null) {
-            instance = new LocationsDao();
+            instance = new JobsDao();
         }
         return instance;
     }
 
-    public Locations create(Locations location) throws SQLException {
-        String insertLocation = "INSERT INTO Locations(LocationId, City, Country, Lat, Lng) VALUES(?, ?, ?, ?, ?);";
+    public Jobs create(Jobs job) throws SQLException {
+        String insertJob = "INSERT INTO Jobs(JobId, Title, AdvertiserType, ApplyButtonDisabled, EasyApply, PostedDate, Rating, Source, CompanyId, LocationId) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         Connection connection = null;
         PreparedStatement insertStmt = null;
         try {
             connection = connectionManager.getConnection();
-            insertStmt = connection.prepareStatement(insertLocation);
-            insertStmt.setInt(1, location.getLocationId());
-            insertStmt.setString(2, location.getCity());
-            insertStmt.setString(3, location.getCountry());
-            insertStmt.setDouble(4, location.getLat());
-            insertStmt.setDouble(5, location.getLng());
+            insertStmt = connection.prepareStatement(insertJob);
+            insertStmt.setInt(1, job.getJobId());
+            insertStmt.setString(2, job.getTitle());
+            insertStmt.setString(3, job.getAdvertiserType());
+            insertStmt.setBoolean(4, job.isApplyButtonDisabled());
+            insertStmt.setBoolean(5, job.isEasyApply());
+            insertStmt.setString(6, job.getPostedDate());
+            insertStmt.setBigDecimal(7, job.getRating());
+            insertStmt.setString(8, job.getSource());
+            insertStmt.setInt(9, job.getCompany().getCompanyId());
+            insertStmt.setInt(10, job.getLocation().getLocationId());
             insertStmt.executeUpdate();
-            return location;
+            return job;
         } finally {
             if(connection != null) {
                 connection.close();
@@ -49,18 +54,18 @@ public class LocationsDao {
         }
     }
 
-    public Locations updateCity(Locations location, String newCity) throws SQLException {
-        String updateLocation = "UPDATE Locations SET City=? WHERE LocationId=?;";
+    public Jobs updateTitle(Jobs job, String newTitle) throws SQLException {
+        String updateJob = "UPDATE Jobs SET Title=? WHERE JobId=?;";
         Connection connection = null;
         PreparedStatement updateStmt = null;
         try {
             connection = connectionManager.getConnection();
-            updateStmt = connection.prepareStatement(updateLocation);
-            updateStmt.setString(1, newCity);
-            updateStmt.setInt(2, location.getLocationId());
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setString(1, newTitle);
+            updateStmt.setInt(2, job.getJobId());
             updateStmt.executeUpdate();
-            location.setCity(newCity);
-            return location;
+            job.setTitle(newTitle);
+            return job;
         } finally {
             if(connection != null) {
                 connection.close();
@@ -71,14 +76,14 @@ public class LocationsDao {
         }
     }
 
-    public Locations delete(Locations location) throws SQLException {
-        String deleteLocation = "DELETE FROM Locations WHERE LocationId=?;";
+    public Jobs delete(Jobs job) throws SQLException {
+        String deleteJob = "DELETE FROM Jobs WHERE JobId=?;";
         Connection connection = null;
         PreparedStatement deleteStmt = null;
         try {
             connection = connectionManager.getConnection();
-            deleteStmt = connection.prepareStatement(deleteLocation);
-            deleteStmt.setInt(1, location.getLocationId());
+            deleteStmt = connection.prepareStatement(deleteJob);
+            deleteStmt.setInt(1, job.getJobId());
             deleteStmt.executeUpdate();
             return null;
         } finally {
@@ -91,24 +96,33 @@ public class LocationsDao {
         }
     }
 
-    public Locations getLocationById(int locationId) throws SQLException {
-        String selectLocation = "SELECT LocationId, City, Country, Lat, Lng FROM Locations WHERE LocationId=?;";
+    public Jobs getJobById(int jobId) throws SQLException {
+        String selectJob = "SELECT JobId, Title, AdvertiserType, ApplyButtonDisabled, EasyApply, PostedDate, Rating, Source, CompanyId, LocationId FROM Jobs WHERE JobId=?;";
         Connection connection = null;
         PreparedStatement selectStmt = null;
         ResultSet results = null;
+        CompaniesDao companiesDao = CompaniesDao.getInstance();
+        LocationsDao locationsDao = LocationsDao.getInstance();
         try {
             connection = connectionManager.getConnection();
-            selectStmt = connection.prepareStatement(selectLocation);
-            selectStmt.setInt(1, locationId);
+            selectStmt = connection.prepareStatement(selectJob);
+            selectStmt.setInt(1, jobId);
             results = selectStmt.executeQuery();
             if(results.next()) {
-                int resultLocationId = results.getInt("LocationId");
-                String city = results.getString("City");
-                String country = results.getString("Country");
-                double lat = results.getDouble("Lat");
-                double lng = results.getDouble("Lng");
-                Locations location = new Locations(resultLocationId, city, country, lat, lng);
-                return location;
+                int resultJobId = results.getInt("JobId");
+                String title = results.getString("Title");
+                String advertiserType = results.getString("AdvertiserType");
+                boolean applyButtonDisabled = results.getBoolean("ApplyButtonDisabled");
+                boolean easyApply = results.getBoolean("EasyApply");
+                String postedDate = results.getString("PostedDate");
+                BigDecimal rating = results.getBigDecimal("Rating");
+                String source = results.getString("Source");
+                int companyId = results.getInt("CompanyId");
+                int locationId = results.getInt("LocationId");
+                Companies company = companiesDao.getCompanyById(companyId);
+                Locations location = locationsDao.getLocationById(locationId);
+                Jobs job = new Jobs(resultJobId, title, advertiserType, applyButtonDisabled, easyApply, postedDate, rating, source, company, location);
+                return job;
             }
         } finally {
             if(connection != null) {
@@ -122,38 +136,5 @@ public class LocationsDao {
             }
         }
         return null;
-    }
-
-    public List<Locations> getLocationsByCountry(String country) throws SQLException {
-        List<Locations> locationsList = new ArrayList<>();
-        String selectLocations = "SELECT LocationId, City, Country, Lat, Lng FROM Locations WHERE Country=?;";
-        Connection connection = null;
-        PreparedStatement selectStmt = null;
-        ResultSet results = null;
-        try {
-            connection = connectionManager.getConnection();
-            selectStmt = connection.prepareStatement(selectLocations);
-            selectStmt.setString(1, country);
-            results = selectStmt.executeQuery();
-            while(results.next()) {
-                int locationId = results.getInt("LocationId");
-                String city = results.getString("City");
-                double lat = results.getDouble("Lat");
-                double lng = results.getDouble("Lng");
-                Locations location = new Locations(locationId, city, country, lat, lng);
-                locationsList.add(location);
-            }
-        } finally {
-            if(connection != null) {
-                connection.close();
-            }
-            if(selectStmt != null) {
-                selectStmt.close();
-            }
-            if(results != null) {
-                results.close();
-            }
-        }
-        return locationsList;
     }
 }
