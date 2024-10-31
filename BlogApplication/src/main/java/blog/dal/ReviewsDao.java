@@ -59,53 +59,6 @@ public class ReviewsDao {
         }
     }
 
-    public Reviews getReviewById(int reviewId) throws SQLException {
-        String selectReview = "SELECT ReviewId, Cons, Pros, Publisher, RatingForCareerOpportunities, " +
-                "RatingForCompBenefits, RatingForCultureValues, RatingOverall, RatingForSeniorManagement, " +
-                "RatingForWorkLifeBalanace, ReviewContent, ReviewerLocation, ReviewerStatus, JobId " +
-                "FROM Reviews WHERE ReviewId=?;";
-        Connection connection = null;
-        PreparedStatement selectStmt = null;
-        ResultSet results = null;
-        try {
-            connection = connectionManager.getConnection();
-            selectStmt = connection.prepareStatement(selectReview);
-            selectStmt.setInt(1, reviewId);
-            results = selectStmt.executeQuery();
-            if (results.next()) {
-                int resultReviewId = results.getInt("ReviewId");
-                String cons = results.getString("Cons");
-                String pros = results.getString("Pros");
-                String publisher = results.getString("Publisher");
-                BigDecimal ratingForCareerOpportunities = results.getBigDecimal("RatingForCareerOpportunities");
-                BigDecimal ratingForCompBenefits = results.getBigDecimal("RatingForCompBenefits");
-                BigDecimal ratingForCultureValues = results.getBigDecimal("RatingForCultureValues");
-                BigDecimal ratingOverall = results.getBigDecimal("RatingOverall");
-                BigDecimal ratingForSeniorManagement = results.getBigDecimal("RatingForSeniorManagement");
-                BigDecimal ratingForWorkLifeBalanace = results.getBigDecimal("RatingForWorkLifeBalanace");
-                String reviewContent = results.getString("ReviewContent");
-                String reviewerLocation = results.getString("ReviewerLocation");
-                String reviewerStatus = results.getString("ReviewerStatus");
-                int jobId = results.getInt("JobId");
-                Jobs job = new Jobs(jobId);
-                Reviews review = new Reviews(resultReviewId, cons, pros, publisher, ratingForCareerOpportunities,
-                        ratingForCompBenefits, ratingForCultureValues, ratingOverall, ratingForSeniorManagement,
-                        ratingForWorkLifeBalanace, reviewContent, reviewerLocation, reviewerStatus, job);
-                return review;
-            }
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-            if (selectStmt != null) {
-                selectStmt.close();
-            }
-            if (results != null) {
-                results.close();
-            }
-        }
-        return null;
-    }
 
     public Reviews updateContent(Reviews review, String newContent) throws SQLException {
         String updateReview = "UPDATE Reviews SET ReviewContent=? WHERE ReviewId=?;";

@@ -50,43 +50,6 @@ public class BenefitsCommentsDao {
         }
     }
 
-    public BenefitsComments getCommentById(int benefitsCommentsId) throws SQLException {
-        String selectComment = "SELECT BenefitsCommentsId, CommentCity, CommentState, CommentContent, CreatedTime, CommentRating, JobId " +
-                "FROM BenefitsComments WHERE BenefitsCommentsId=?;";
-        Connection connection = null;
-        PreparedStatement selectStmt = null;
-        ResultSet results = null;
-        try {
-            connection = connectionManager.getConnection();
-            selectStmt = connection.prepareStatement(selectComment);
-            selectStmt.setInt(1, benefitsCommentsId);
-            results = selectStmt.executeQuery();
-            if (results.next()) {
-                int resultCommentId = results.getInt("BenefitsCommentsId");
-                String commentCity = results.getString("CommentCity");
-                String commentState = results.getString("CommentState");
-                String commentContent = results.getString("CommentContent");
-                Timestamp createdTime = results.getTimestamp("CreatedTime");
-                double commentRating = results.getDouble("CommentRating");
-                int jobId = results.getInt("JobId");
-                Jobs job = new Jobs(jobId);
-                BenefitsComments comment = new BenefitsComments(resultCommentId, commentCity, commentState, 
-                        commentContent, createdTime, commentRating, job);
-                return comment;
-            }
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-            if (selectStmt != null) {
-                selectStmt.close();
-            }
-            if (results != null) {
-                results.close();
-            }
-        }
-        return null;
-    }
 
     public BenefitsComments updateCommentContent(BenefitsComments comment, String newContent) throws SQLException {
         String updateComment = "UPDATE BenefitsComments SET CommentContent=? WHERE BenefitsCommentsId=?;";

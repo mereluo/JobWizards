@@ -47,40 +47,6 @@ public class BenefitsHighlightsDao {
         }
     }
 
-    public BenefitsHighlights getHighlightById(int benefitsHighlightsId) throws SQLException {
-        String selectHighlight = "SELECT BenefitsHighlightsId, HighlightPhrase, HighlightName, CommentCount, JobId " +
-                "FROM BenefitsHighlights WHERE BenefitsHighlightsId=?;";
-        Connection connection = null;
-        PreparedStatement selectStmt = null;
-        ResultSet results = null;
-        try {
-            connection = connectionManager.getConnection();
-            selectStmt = connection.prepareStatement(selectHighlight);
-            selectStmt.setInt(1, benefitsHighlightsId);
-            results = selectStmt.executeQuery();
-            if (results.next()) {
-                int resultHighlightId = results.getInt("BenefitsHighlightsId");
-                String highlightPhrase = results.getString("HighlightPhrase");
-                String highlightName = results.getString("HighlightName");
-                String commentCount = results.getString("CommentCount");
-                int jobId = results.getInt("JobId");
-                Jobs job = new Jobs(jobId);
-                BenefitsHighlights highlight = new BenefitsHighlights(resultHighlightId, highlightPhrase, highlightName, commentCount, job);
-                return highlight;
-            }
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-            if (selectStmt != null) {
-                selectStmt.close();
-            }
-            if (results != null) {
-                results.close();
-            }
-        }
-        return null;
-    }
 
     public BenefitsHighlights updateHighlightPhrase(BenefitsHighlights highlight, String newPhrase) throws SQLException {
         String updateHighlight = "UPDATE BenefitsHighlights SET HighlightPhrase=? WHERE BenefitsHighlightsId=?;";
