@@ -11,7 +11,7 @@
 <title>Create a User</title>
 </head>
 <body>
-	<h1>Create BlogUser</h1>
+	<h1>Create BLOGUSERr</h1>
 	<form action="usercreate" method="post">
 		<p>
 			<label for="username">UserName</label>
