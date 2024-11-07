@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JobsDao {
     protected ConnectionManager connectionManager;
@@ -136,5 +138,81 @@ public class JobsDao {
             }
         }
         return null;
+    }
+    
+    public List<Jobs> getJobsByRating(String[] ratingCriteria) throws SQLException {
+        List<Jobs> jobsList = new ArrayList<>();
+        
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT j.JobId, j.Title, j.AdvertiserType, j.ApplyButtonDisabled, ")
+                    .append("j.EasyApply, j.PostedDate, j.Rating, j.Source, j.CompanyId, j.LocationId, ");
+
+        // Add average ratings for selected criteria
+        if (ratingCriteria != null && ratingCriteria.length > 0) {
+            for (int i = 0; i < ratingCriteria.length; i++) {
+                queryBuilder.append("AVG(r.").append(ratingCriteria[i]).append(") AS avg_").append(ratingCriteria[i]);
+                if (i < ratingCriteria.length - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+        } else {
+            queryBuilder.append("AVG(r.ratingForOverall) AS avg_ratingForOverall"); // Default to overall rating if no criteria selected
+        }
+
+        queryBuilder.append(" FROM Jobs j ")
+                    .append("JOIN Reviews r ON j.JobId = r.JobId ")
+                    .append("GROUP BY j.JobId, j.Title, j.AdvertiserType, j.ApplyButtonDisabled, ")
+                    .append("j.EasyApply, j.PostedDate, j.Rating, j.Source, j.CompanyId, j.LocationId ");
+
+        // Order by the specified criteria averages
+        if (ratingCriteria != null && ratingCriteria.length > 0) {
+            queryBuilder.append("ORDER BY ");
+            for (int i = 0; i < ratingCriteria.length; i++) {
+                queryBuilder.append("avg_").append(ratingCriteria[i]);
+                if (i < ratingCriteria.length - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(" DESC Limit 10");
+        }
+
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+    	CompaniesDao companiesDao = CompaniesDao.getInstance();
+        LocationsDao locationsDao = LocationsDao.getInstance();
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(queryBuilder.toString());
+            results = selectStmt.executeQuery();
+            
+            while (results.next()) {
+                Jobs job = new Jobs(
+                		 results.getInt("JobId"),
+                         results.getString("Title"),
+                         results.getString("AdvertiserType"),
+                         results.getBoolean("ApplyButtonDisabled"),
+                         results.getBoolean("EasyApply"),
+                         results.getString("PostedDate"),
+                         results.getBigDecimal("Rating"),
+                         results.getString("Source"),
+                         companiesDao.getCompanyById(results.getInt("CompanyId")),
+                         locationsDao.getLocationById(results.getInt("LocationId"))
+                );
+                jobsList.add(job);
+            }
+            
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+        return jobsList;
     }
 }
