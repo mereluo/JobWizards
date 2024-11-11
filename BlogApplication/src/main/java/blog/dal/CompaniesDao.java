@@ -142,6 +142,51 @@ public class CompaniesDao {
         }
         return null;
     }
+    
+    public Companies getCompanyByName(String companyName) throws SQLException {
+        String selectCompany = "SELECT CompanyId, CompanyName, IsExpired, FoundedYear, Headquarters, " +
+                "CompanyType, CompanySize, HideCEOInfo, IsSponsored, Revenue, IndustryId " +
+                "FROM Companies WHERE CompanyName=?;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectCompany);
+            selectStmt.setString(1, companyName);
+            results = selectStmt.executeQuery();
+            
+            if (results.next()) {
+                int companyId = results.getInt("CompanyId");
+                String resultCompanyName = results.getString("CompanyName");
+                boolean isExpired = results.getBoolean("IsExpired");
+                String foundedYear = results.getString("FoundedYear");
+                String headquarters = results.getString("Headquarters");
+                String companyType = results.getString("CompanyType");
+                String companySize = results.getString("CompanySize");
+                boolean hideCEOInfo = results.getBoolean("HideCEOInfo");
+                boolean isSponsored = results.getBoolean("IsSponsored");
+                String revenue = results.getString("Revenue");
+                int industryId = results.getInt("IndustryId");
+                Industries industry = IndustriesDao.getInstance().getIndustryById(industryId);
+                
+                Companies company = new Companies(companyId, resultCompanyName, isExpired, foundedYear, 
+                        headquarters, companyType, companySize, hideCEOInfo, isSponsored, revenue, industry);
+                return company;
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+        return null; // Return null if no matching company is found
+    }
 
     public List<Companies> getCompaniesByIndustry(Industries industry) throws SQLException {
         List<Companies> companiesList = new ArrayList<>();
@@ -184,4 +229,33 @@ public class CompaniesDao {
         }
         return companiesList;
     }
+    
+	public int getNextAvailableCompanyId() throws SQLException {
+	    String selectMaxId = "SELECT MAX(CompanyId) AS MaxId FROM Companies;";
+	    Connection connection = null;
+	    PreparedStatement selectStmt = null;
+	    ResultSet results = null;
+	    try {
+	        connection = connectionManager.getConnection();
+	        selectStmt = connection.prepareStatement(selectMaxId);
+	        results = selectStmt.executeQuery();
+	        
+	        if (results.next()) {
+	            int maxId = results.getInt("MaxId");
+	            return maxId + 1; // Return the next available ID
+	        } else {
+	            return 1; // If no entries are found, start with ID 1
+	        }
+	    } finally {
+	        if (connection != null) {
+	            connection.close();
+	        }
+	        if (selectStmt != null) {
+	            selectStmt.close();
+	        }
+	        if (results != null) {
+	            results.close();
+	        }
+	    }
+	}
 }

@@ -46,57 +46,53 @@ public class FindJobs extends HttpServlet {
 	
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// Map for storing messages.
-        Map<String, String> messages = new HashMap<String, String>();
-        req.setAttribute("messages", messages);
-        
-        Jobs jobs = null;
-        
-        // Retrieve and validate jobId.
-        String id = req.getParameter("jobId");
-        int idnumber = Integer.parseInt(id);
-        if (id == null || id.trim().isEmpty()) {
-            messages.put("success", "Please enter a valid nameGet." + req);
-        } else {
-        	try {
-        		jobs = jobsDao.getJobById(idnumber);
-            } catch (SQLException e) {
-    			e.printStackTrace();
-    			throw new IOException(e);
-            }
-        	messages.put("success", "Displaying results for " + id);
-        	messages.put("previousjobId", id);
-        }
-        req.setAttribute("jobs", jobs);
-        req.getRequestDispatcher("/FindJobs.jsp").forward(req, resp);
+	        throws ServletException, IOException {
+	    // Map for storing messages.
+	    Map<String, String> messages = new HashMap<>();
+	    req.setAttribute("messages", messages);
+
+	    Jobs job = null;
+	    String id = req.getParameter("jobId");
+
+	    // Validate and retrieve jobId.
+	    if (id == null || id.trim().isEmpty()) {
+	        messages.put("error", "Please enter a valid job ID.");
+	    } else {
+	        try {
+	            int idNumber = Integer.parseInt(id);
+	            job = jobsDao.getJobById(idNumber);
+
+	            if (job != null) {
+	                messages.put("success", "Displaying results for Job ID: " + id);
+	            } else {
+	                messages.put("error", "No job found with Job ID: " + id);
+	            }
+	        } catch (NumberFormatException e) {
+	            messages.put("error", "Job ID must be a valid number.");
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            messages.put("error", "An unexpected error occurred while retrieving job details.");
+	        }
+	    }
+
+	    req.setAttribute("job", job);
+	    req.getRequestDispatcher("/FindJobs.jsp").forward(req, resp);
+	}
+
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+	        throws ServletException, IOException {
+	    // Retrieve jobId from form data
+	    String id = req.getParameter("jobId");
+
+	    // Redirect to doGet with jobId as query parameter
+	    if (id != null && !id.trim().isEmpty()) {
+	        resp.sendRedirect("findjobs?jobId=" + id);
+	    } else {
+	        // If jobId is invalid, redirect to the form with an error message
+	        req.setAttribute("messages", Map.of("error", "Please enter a valid job ID."));
+	        req.getRequestDispatcher("/FindJobs.jsp").forward(req, resp);
+	    }
 	}
 	
-	@Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp)
-    		throws ServletException, IOException {
-        // Map for storing messages.
-        Map<String, String> messages = new HashMap<String, String>();
-        req.setAttribute("messages", messages);
-        
-        Jobs jobs = null;
-        
-        // Retrieve and validate jobId.
-        String id = req.getParameter("jobId");
-        int idnumber = Integer.parseInt(id);
-        if (id == null || id.trim().isEmpty()) {
-            messages.put("success", "Please enter a valid namePost." + req);
-        } else {
-        	// Retrieve BlogUsers, and store as a message.
-        	try {
-            	jobs = jobsDao.getJobById(idnumber);
-            } catch (SQLException e) {
-    			e.printStackTrace();
-    			throw new IOException(e);
-            }
-        	messages.put("success", "Displaying results for " + id);
-        }
-        req.setAttribute("job", jobs);
-        req.getRequestDispatcher("/FindJobs.jsp").forward(req, resp);
-    }
 }

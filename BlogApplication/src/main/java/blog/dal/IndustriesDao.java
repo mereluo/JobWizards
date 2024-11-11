@@ -149,4 +149,69 @@ public class IndustriesDao {
         }
         return industriesList;
     }
+    
+    public Industries getIndustryByName(String industryName) throws SQLException {
+        String selectIndustry = "SELECT IndustryId, Industry, SectorId FROM Industries WHERE Industry=?;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectIndustry);
+            selectStmt.setString(1, industryName);
+            results = selectStmt.executeQuery();
+
+            if (results.next()) {
+                int industryId = results.getInt("IndustryId");
+                String resultIndustryName = results.getString("Industry");
+                int sectorId = results.getInt("SectorId");
+                Sectors sector = SectorsDao.getInstance().getSectorById(sectorId);
+                return new Industries(industryId, resultIndustryName, sector);
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+        return null; // Return null if no matching industry is found
+    }
+    
+    public int getNextAvailableIndustryId() throws SQLException {
+        String selectMaxId = "SELECT MAX(IndustryId) AS MaxId FROM Industries;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectMaxId);
+            results = selectStmt.executeQuery();
+
+            if (results.next()) {
+                int maxId = results.getInt("MaxId");
+                return maxId + 1; // Return the next available ID
+            } else {
+                return 1; // Start with ID 1 if no entries exist
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+    }
+
+
 }

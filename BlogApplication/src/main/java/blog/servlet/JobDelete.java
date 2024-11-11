@@ -26,16 +26,34 @@ public class JobDelete extends HttpServlet {
 	public void init() throws ServletException {
 		jobsDao = JobsDao.getInstance();
 	}
-	
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// Map for storing messages.
-        Map<String, String> messages = new HashMap<String, String>();
-        req.setAttribute("messages", messages);
-        // Provide a title and render the JSP.
-        messages.put("title", "Delete Job");        
-        req.getRequestDispatcher("/JobDelete.jsp").forward(req, resp);
+	        throws ServletException, IOException {
+	    String id = req.getParameter("jobId");
+	    Map<String, String> messages = new HashMap<>();
+	    req.setAttribute("messages", messages);
+
+	    if (id == null || id.trim().isEmpty()) {
+	        messages.put("title", "Invalid jobId");
+	    } else {
+	        try {
+	            int idnumber = Integer.parseInt(id);
+	            Jobs job = null;
+	            job = jobsDao.getJobById(idnumber);
+	            job = jobsDao.delete(job);
+	            if (job == null) {
+	                messages.put("title", "Successfully deleted Job ID: " + id);
+	            } else {
+	                messages.put("title", "Failed to delete Job ID: " + id);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            throw new IOException(e);
+	        }
+	    }
+
+	    resp.sendRedirect("findjobs");
 	}
 	
 	@Override
@@ -52,17 +70,11 @@ public class JobDelete extends HttpServlet {
             messages.put("title", "Invalid jobId");
             messages.put("disableSubmit", "true");
         } else {
-        	// Delete the BlogUser.
         	String title = req.getParameter("title");
         	String advertiserType = req.getParameter("advertiserType");
-//        	boolean applyButtonDisabled = req.getParameter("applyButtonDisabled");
-//        	boolean easyApply = req.getParameter("easyApply");
         	String postedDate = req.getParameter("postedDate");
-//        	String rating = req.getParameter("rating");
         	BigDecimal rating = new BigDecimal("4.456");
         	String source = req.getParameter("source");
-//        	String company = req.getParameter("company");
-//        	String location = req.getParameter("location");
             Companies company = new Companies(0);
             Locations location = new Locations(18);
 	        Jobs job = new Jobs(idnumber, title, advertiserType, false, false, postedDate, rating, source, company, location);

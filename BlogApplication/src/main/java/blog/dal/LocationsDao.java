@@ -156,4 +156,70 @@ public class LocationsDao {
         }
         return locationsList;
     }
+    
+    public Locations getLocationByCity(String city) throws SQLException {
+        String selectLocation = "SELECT LocationId, City, Country, Lat, Lng FROM Locations WHERE City=?;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectLocation);
+            selectStmt.setString(1, city);
+            results = selectStmt.executeQuery();
+
+            if (results.next()) {
+                int locationId = results.getInt("LocationId");
+                String resultCity = results.getString("City");
+                String country = results.getString("Country");
+                double lat = results.getDouble("Lat");
+                double lng = results.getDouble("Lng");
+                return new Locations(locationId, resultCity, country, lat, lng);
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+        return null; // Return null if no matching location is found
+    }
+    
+    public int getNextAvailableLocationId() throws SQLException {
+        String selectMaxId = "SELECT MAX(LocationId) AS MaxId FROM Locations;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectMaxId);
+            results = selectStmt.executeQuery();
+
+            if (results.next()) {
+                int maxId = results.getInt("MaxId");
+                return maxId + 1; // Return the next available ID
+            } else {
+                return 1; // Start with ID 1 if no entries exist
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+    }
+
+
 }
