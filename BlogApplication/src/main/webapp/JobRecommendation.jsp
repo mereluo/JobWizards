@@ -525,16 +525,5 @@
         </script>
 	</div>
     
-    
-<%--     <!-- Section to display recommended jobs -->
-    <div>
-        <h2>Recommended Jobs:</h2>
-        <c:forEach var="job" items="${jobList}">
-            <p>Job Title: ${job.title}</p>
-            <p>Company: ${job.company.companyName}</p>
-            <hr>
-        </c:forEach>
-    </div> --%>
-    
 </body>
 </html>
