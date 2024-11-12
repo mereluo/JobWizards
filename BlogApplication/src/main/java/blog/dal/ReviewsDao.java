@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewsDao {
     protected ConnectionManager connectionManager;
@@ -26,7 +28,7 @@ public class ReviewsDao {
 
     public Reviews create(Reviews review) throws SQLException {
         String insertReview = "INSERT INTO Reviews(Cons, Pros, Publisher, RatingForCareerOpportunities, " +
-                "RatingForCompBenefits, RatingForCultureValues, RatingOverall, RatingForSeniorManagement, " +
+                "RatingForCompBenefits, RatingForCultureValues, RatingForOverall, RatingForSeniorManagement, " +
                 "RatingForWorkLifeBalanace, ReviewContent, ReviewerLocation, ReviewerStatus, JobId) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         Connection connection = null;
@@ -40,7 +42,7 @@ public class ReviewsDao {
             insertStmt.setBigDecimal(4, review.getRatingForCareerOpportunities());
             insertStmt.setBigDecimal(5, review.getRatingForCompBenefits());
             insertStmt.setBigDecimal(6, review.getRatingForCultureValues());
-            insertStmt.setBigDecimal(7, review.getRatingOverall());
+            insertStmt.setBigDecimal(7, review.getRatingForOverall());
             insertStmt.setBigDecimal(8, review.getRatingForSeniorManagement());
             insertStmt.setBigDecimal(9, review.getRatingForWorkLifeBalanace());
             insertStmt.setString(10, review.getReviewContent());
@@ -100,5 +102,57 @@ public class ReviewsDao {
                 deleteStmt.close();
             }
         }
+    }
+    
+    public List<Reviews> getReviewsByJobId(int jobId) throws SQLException {
+        List<Reviews> reviewsList = new ArrayList<>();
+        String selectReviews = "SELECT ReviewId, Cons, Pros, Publisher, RatingForCareerOpportunities, " +
+                "RatingForCompBenefits, RatingForCultureValues, RatingForOverall, RatingForSeniorManagement, " +
+                "RatingForWorkLifeBalanace, ReviewContent, ReviewerLocation, ReviewerStatus, JobId " +
+                "FROM Reviews WHERE JobId = ?;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+        JobsDao jobsDao = JobsDao.getInstance();
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectReviews);
+            selectStmt.setInt(1, jobId);
+            results = selectStmt.executeQuery();
+
+            while (results.next()) {
+                int reviewId = results.getInt("ReviewId");
+                String cons = results.getString("Cons");
+                String pros = results.getString("Pros");
+                String publisher = results.getString("Publisher");
+                BigDecimal ratingForCareerOpportunities = results.getBigDecimal("RatingForCareerOpportunities");
+                BigDecimal ratingForCompBenefits = results.getBigDecimal("RatingForCompBenefits");
+                BigDecimal ratingForCultureValues = results.getBigDecimal("RatingForCultureValues");
+                BigDecimal ratingForOverall = results.getBigDecimal("RatingForOverall");
+                BigDecimal ratingForSeniorManagement = results.getBigDecimal("RatingForSeniorManagement");
+                BigDecimal ratingForWorkLifeBalanace = results.getBigDecimal("RatingForWorkLifeBalanace");
+                String reviewContent = results.getString("ReviewContent");
+                String reviewerLocation = results.getString("ReviewerLocation");
+                String reviewerStatus = results.getString("ReviewerStatus");
+                Jobs job = jobsDao.getJobById(jobId);
+
+                Reviews review = new Reviews(reviewId, cons, pros, publisher, ratingForCareerOpportunities,
+                        ratingForCompBenefits, ratingForCultureValues, ratingForOverall,
+                        ratingForSeniorManagement, ratingForWorkLifeBalanace, reviewContent,
+                        reviewerLocation, reviewerStatus, job);
+                reviewsList.add(review);
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+        return reviewsList;
     }
 }

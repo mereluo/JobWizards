@@ -415,6 +415,80 @@
 		                </div>
 		                
 		            </div>
+		            
+	                <!-- Reviews Section -->
+					<div class="section-title">Reviews</div>
+					<c:if test="${empty reviewsList}">
+					    <p>No reviews available for this job.</p>
+					</c:if>
+					<c:forEach var="review" items="${reviewsList}">
+					    <div class="review-card" style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
+					        <!-- Reviewer Information -->
+					        <div style="display: flex; align-items: center; gap: 10px;">
+					            <!-- Default human icon -->
+					            <i class="fas fa-user-circle" style="font-size: 40px; color: #ccc;"></i>
+					            
+					            <!-- Publisher and Location -->
+					            <div>
+					                <p style="margin: 0; font-weight: bold;"><c:out value="${review.publisher}" /></p>
+					                <p style="margin: 0; color: #777;"><c:out value="${review.reviewerLocation}" /></p>
+					            </div>
+					        </div>
+					        
+					        <!-- Overall Rating with Stars -->
+					        <div style="margin-top: 10px;">
+					            <p>Overall : 
+					                <c:forEach var="star" begin="1" end="${review.ratingForOverall.intValue()}">
+					                    <i class="fas fa-star" style="color: #ffd700;"></i>
+					                </c:forEach>
+					                <c:if test="${review.ratingForOverall % 1 != 0}">
+					                    <i class="fas fa-star-half-alt" style="color: #ffd700;"></i>
+					                </c:if>
+					                <c:forEach var="emptyStar" begin="${review.ratingForOverall.intValue() + 1}" end="5">
+					                    <i class="far fa-star" style="color: #ffd700;"></i>
+					                </c:forEach>
+					            </p>
+					        </div>
+					
+					        <!-- Culture Rating with Stars -->
+					        <div>
+					            <p>Culture : 
+					                <c:forEach var="star" begin="1" end="${review.ratingForCultureValues.intValue()}">
+					                    <i class="fas fa-star" style="color: #ffd700;"></i>
+					                </c:forEach>
+					                <c:if test="${review.ratingForCultureValues % 1 != 0}">
+					                    <i class="fas fa-star-half-alt" style="color: #ffd700;"></i>
+					                </c:if>
+					                <c:forEach var="emptyStar" begin="${review.ratingForCultureValues.intValue() + 1}" end="5">
+					                    <i class="far fa-star" style="color: #ffd700;"></i>
+					                </c:forEach>
+					            </p>
+					        </div>
+					
+					        <!-- Work-Life Balance Rating with Stars -->
+					        <div>
+					            <p>Work-Life Balance :
+					                <c:forEach var="star" begin="1" end="${review.ratingForWorkLifeBalanace.intValue()}">
+					                    <i class="fas fa-star" style="color: #ffd700;"></i>
+					                </c:forEach>
+					                <c:if test="${review.ratingForWorkLifeBalanace % 1 != 0}">
+					                    <i class="fas fa-star-half-alt" style="color: #ffd700;"></i>
+					                </c:if>
+					                <c:forEach var="emptyStar" begin="${review.ratingForWorkLifeBalanace.intValue() + 1}" end="5">
+					                    <i class="far fa-star" style="color: #ffd700;"></i>
+					                </c:forEach>
+					            </p>
+					        </div>
+					
+					        <!-- Pros, Cons, and Content -->
+					        <div style="margin-top: 10px;">
+					            <p><b>Pros:</b> <c:out value="${review.pros}" /></p>
+					            <p><b>Cons:</b> <c:out value="${review.cons}" /></p>
+					            <p><b>Review from </b> <c:out value="${review.reviewContent}" /></p>
+					        </div>
+					    </div>
+					</c:forEach>
+
 		        </div>
 		        
 		        

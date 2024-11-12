@@ -10,7 +10,7 @@ public class Reviews {
     protected BigDecimal ratingForCareerOpportunities;
     protected BigDecimal ratingForCompBenefits;
     protected BigDecimal ratingForCultureValues;
-    protected BigDecimal ratingOverall;
+    protected BigDecimal ratingForOverall;
     protected BigDecimal ratingForSeniorManagement;
     protected BigDecimal ratingForWorkLifeBalanace;
     protected String reviewContent;
@@ -19,7 +19,7 @@ public class Reviews {
     protected Jobs job;
 	
     public Reviews(int reviewId, String cons, String pros, String publisher, BigDecimal ratingForCareerOpportunities,
-			BigDecimal ratingForCompBenefits, BigDecimal ratingForCultureValues, BigDecimal ratingOverall,
+			BigDecimal ratingForCompBenefits, BigDecimal ratingForCultureValues, BigDecimal ratingForOverall,
 			BigDecimal ratingForSeniorManagement, BigDecimal ratingForWorkLifeBalanace, String reviewContent,
 			String reviewerLocation, String reviewerStatus, Jobs job) {
 		this.reviewId = reviewId;
@@ -29,7 +29,7 @@ public class Reviews {
 		this.ratingForCareerOpportunities = ratingForCareerOpportunities;
 		this.ratingForCompBenefits = ratingForCompBenefits;
 		this.ratingForCultureValues = ratingForCultureValues;
-		this.ratingOverall = ratingOverall;
+		this.ratingForOverall = ratingForOverall;
 		this.ratingForSeniorManagement = ratingForSeniorManagement;
 		this.ratingForWorkLifeBalanace = ratingForWorkLifeBalanace;
 		this.reviewContent = reviewContent;
@@ -94,12 +94,12 @@ public class Reviews {
 		this.ratingForCultureValues = ratingForCultureValues;
 	}
 
-	public BigDecimal getRatingOverall() {
-		return ratingOverall;
+	public BigDecimal getRatingForOverall() {
+		return ratingForOverall;
 	}
 
-	public void setRatingOverall(BigDecimal ratingOverall) {
-		this.ratingOverall = ratingOverall;
+	public void setRatingForOverall(BigDecimal ratingForOverall) {
+		this.ratingForOverall = ratingForOverall;
 	}
 
 	public BigDecimal getRatingForSeniorManagement() {

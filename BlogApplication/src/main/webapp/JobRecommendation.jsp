@@ -548,24 +548,35 @@
 	            <p style="margin: 5px 0;">Location: ${job.location.city}</p>
 	              
 	            <!-- Rating with Stars -->
-	            <p style="margin: 5px 0;">Rating:
-	                <c:forEach var="star" begin="1" end="${job.rating}">
-	                    <i class="fas fa-star" style="color: #ffd700;"></i>
-	                </c:forEach>
-	            </p>
+				<p style="margin: 5px 0;">Rating:
+				    <!-- Display full stars -->
+				    <c:forEach var="star" begin="1" end="${job.rating >= 5 ? 5 : job.rating.intValue()}">
+				        <i class="fas fa-star" style="color: #ffd700;"></i>
+				    </c:forEach>
+				
+				    <!-- Display half star if there is a fractional part, but only if it keeps total stars at 5 -->
+				    <c:if test="${job.rating < 5 && job.rating % 1 != 0}">
+				        <i class="fas fa-star-half-alt" style="color: #ffd700;"></i>
+				    </c:if>
+				
+				    <!-- Display empty stars to complete a total of 5 stars -->
+				    <c:forEach var="emptyStar" begin="1" end="${5 - job.rating.intValue() - (job.rating % 1 != 0 && job.rating < 5 ? 1 : 0)}">
+				        <i class="far fa-star" style="color: #ffd700;"></i>
+				    </c:forEach>
+				</p>
 	               
-	               <!-- Share Icons -->
-	               <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-	                   <a href="https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${job.title}" target="_blank" title="Share on LinkedIn" onclick="event.stopPropagation();">
-	                       <i class="fab fa-linkedin" style="font-size: 18px; color: #0e76a8;"></i>
-	                   </a>
-	                   <a href="https://twitter.com/intent/tweet?text=Check out this job at ${job.company.companyName}: ${pageUrl}" target="_blank" title="Share on Twitter" onclick="event.stopPropagation();">
-	                       <i class="fab fa-twitter" style="font-size: 18px; color: #1da1f2;"></i>
-	                   </a>
-	                   <a href="mailto:?subject=Job Opportunity at ${job.company.companyName}&body=Check out this job: ${pageUrl}" title="Share via Email" onclick="event.stopPropagation();">
-	                       <i class="fas fa-envelope" style="font-size: 18px; color: #888;"></i>
-	                   </a>
-	               </div>
+               <!-- Share Icons -->
+               <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                   <a href="https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${job.title}" target="_blank" title="Share on LinkedIn" onclick="event.stopPropagation();">
+                       <i class="fab fa-linkedin" style="font-size: 18px; color: #0e76a8;"></i>
+                   </a>
+                   <a href="https://twitter.com/intent/tweet?text=Check out this job at ${job.company.companyName}: ${pageUrl}" target="_blank" title="Share on Twitter" onclick="event.stopPropagation();">
+                       <i class="fab fa-twitter" style="font-size: 18px; color: #1da1f2;"></i>
+                   </a>
+                   <a href="mailto:?subject=Job Opportunity at ${job.company.companyName}&body=Check out this job: ${pageUrl}" title="Share via Email" onclick="event.stopPropagation();">
+                       <i class="fas fa-envelope" style="font-size: 18px; color: #888;"></i>
+                   </a>
+               </div>
 	           </div>
 	       </c:forEach>
 	    </div>
