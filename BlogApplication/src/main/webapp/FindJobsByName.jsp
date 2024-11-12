@@ -359,42 +359,25 @@
 		</script>
     </div>
     
-	<!-- Container for "What's Trending" and "Feeling Lucky?" on the Same Line -->
-	<div style="display: flex; justify-content: space-between; align-items: center; max-width: 90%; width: 100%; margin: 30px auto 0; padding: 0px 5%;">
+
 	
-	    <!-- "What's Trending" Heading on the Left -->
-	    <h2 style="font-size: 24px; font-weight: bold; color: #333; margin: 0; margin-left: 100px;">What's Trending</h2>
-	
-	    <!-- Feeling Lucky Action Item on the Right -->
-	    <a href="javascript:void(0);" onclick="feelingLucky()" class="action-item" 
-	       style="display: flex; align-items: center; font-size: 18px; color: #93C572; text-decoration: none; cursor: pointer; margin-right: 100px;">
-	        <i class="fas fa-magic" style="margin-right: 8px;"></i> Feeling lucky?
-	    </a>
+	<div style="text-align: center; margin-top: 30px;">
+	    <h2 style="font-size: 24px; font-weight: bold; color: #333; margin-bottom: 20px;">
+	        Search Results for "<c:out value="${jobName}" />"
+	    </h2>
 	</div>
-    
+
 	<div style="display: flex; justify-content: center; margin-top: 20px;">
 	    <c:if test="${empty jobList}">
-	        <!-- Display the empty card by default if no job is found -->
-	        <div id="emptyCardsContainer">
-	            <div class="empty-card">
-	                <p>Updating Job Card...</p>
-	            </div>
-	            <div class="empty-card">
-	                <p>Updating Job Card...</p>
-	            </div>
-	            <div class="empty-card">
-	                <p>Updating Job Card...</p>
-	            </div>
-	            <div class="empty-card">
-	                <p>Updating Job Card...</p>
-	            </div>
-	        </div>
+	        <p style="font-size: 18px; color: #555; text-align: center; width: 100%;">
+	            No jobs found for "<c:out value="${jobName}" />"
+	        </p>
 	    </c:if>
 	    
 		<div id="recommendedJobsContainer" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 20px auto; max-width: 90%;">
 		    <c:forEach var="job" items="${jobList}">
 		        <div class="random-job-card" 
-		             onclick="window.location.href='findjobs?searchQuery=${job.jobId}'" 
+		             onclick="window.location.href='findjobs?searchQuery=${job.jobId}'"  
 		             style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 15px; width: 25%; height: 250px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
 		
 		            <!-- Title and Heart Icon Row -->
@@ -448,34 +431,11 @@
 		        </div>
 		    </c:forEach>
 		</div>
-		
-		<script>
-		    // JavaScript function to handle "Feeling lucky?" action
-		    function feelingLucky() {
-		        const jobCards = document.querySelectorAll('.random-job-card');
-		        if (jobCards.length > 0) {
-		            // Select a random job card and navigate to its link
-		            const randomIndex = Math.floor(Math.random() * jobCards.length);
-		            const randomJobCard = jobCards[randomIndex];
-		            window.location.href = randomJobCard.getAttribute('onclick').replace('window.location.href=', '').replace(/'/g, '');
-		        }
-		    }
-		</script>
-
 	</div>
-	
-	<a href="javascript:void(0);" onclick="openHelp()" class="action-item"
-	   style="position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; font-size: 18px; color: #007BFF; background-color: #ffffff; padding: 10px 15px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); text-decoration: none; cursor: pointer; z-index: 1000;">
-	    <i class="fas fa-lightbulb" style="font-size: 20px;"></i>
-	</a>
-	
-	<script>
-	    function openHelp() {
-	        alert("What's trending: Displays the current high rating jobs. Feeling lucky: Displays one of the job detail randomly selected.");
-	    }
-	</script> 
 
 </body>
 </html>
+
+
 
 

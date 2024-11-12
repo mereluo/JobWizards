@@ -47,25 +47,23 @@ public class FindJobs extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 	        throws ServletException, IOException {
-	    // Map for storing messages.
 	    Map<String, String> messages = new HashMap<>();
 	    req.setAttribute("messages", messages);
 
 	    Jobs job = null;
-	    String id = req.getParameter("jobId");
+	    String searchQuery = req.getParameter("searchQuery");
 
-	    // Validate and retrieve jobId.
-	    if (id == null || id.trim().isEmpty()) {
+	    if (searchQuery == null || searchQuery.trim().isEmpty()) {
 	        messages.put("error", "Please enter a valid job ID.");
 	    } else {
 	        try {
-	            int idNumber = Integer.parseInt(id);
+	            int idNumber = Integer.parseInt(searchQuery);
 	            job = jobsDao.getJobById(idNumber);
 
 	            if (job != null) {
-	                messages.put("success", "Displaying results for Job ID: " + id);
+	                messages.put("success", "Displaying results for Job ID: " + searchQuery);
 	            } else {
-	                messages.put("error", "No job found with Job ID: " + id);
+	                messages.put("error", "No job found with Job ID: " + searchQuery);
 	            }
 	        } catch (NumberFormatException e) {
 	            messages.put("error", "Job ID must be a valid number.");
@@ -82,17 +80,13 @@ public class FindJobs extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 	        throws ServletException, IOException {
-	    // Retrieve jobId from form data
-	    String id = req.getParameter("jobId");
+	    String searchQuery = req.getParameter("searchQuery");
 
-	    // Redirect to doGet with jobId as query parameter
-	    if (id != null && !id.trim().isEmpty()) {
-	        resp.sendRedirect("findjobs?jobId=" + id);
+	    if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+	        resp.sendRedirect("findjobs?searchQuery=" + searchQuery);
 	    } else {
-	        // If jobId is invalid, redirect to the form with an error message
 	        req.setAttribute("messages", Map.of("error", "Please enter a valid job ID."));
 	        req.getRequestDispatcher("/FindJobs.jsp").forward(req, resp);
 	    }
 	}
-	
 }

@@ -243,5 +243,57 @@ public class JobsDao {
             }
         }
     }
+    
+    public List<Jobs> getJobsByName(String jobName) throws SQLException {
+        List<Jobs> jobsList = new ArrayList<>();
+        String selectJobsByName = "SELECT JobId, Title, AdvertiserType, ApplyButtonDisabled, EasyApply, PostedDate, Rating, Source, CompanyId, LocationId " +
+                                  "FROM Jobs " +
+                                  "WHERE Title LIKE ? " +
+                                  "ORDER BY LENGTH(REPLACE(Title, ?, '')) ASC, Rating DESC " +
+                                  "LIMIT 10;";  // Limit to 10 most relevant results
+        
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+        CompaniesDao companiesDao = CompaniesDao.getInstance();
+        LocationsDao locationsDao = LocationsDao.getInstance();
+        
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectJobsByName);
+            selectStmt.setString(1, "%" + jobName + "%");  // Use wildcard for partial matching
+            selectStmt.setString(2, jobName);  // For ordering based on substring match length
+            
+            results = selectStmt.executeQuery();
+            
+            while (results.next()) {
+                Jobs job = new Jobs(
+                    results.getInt("JobId"),
+                    results.getString("Title"),
+                    results.getString("AdvertiserType"),
+                    results.getBoolean("ApplyButtonDisabled"),
+                    results.getBoolean("EasyApply"),
+                    results.getString("PostedDate"),
+                    results.getBigDecimal("Rating"),
+                    results.getString("Source"),
+                    companiesDao.getCompanyById(results.getInt("CompanyId")),
+                    locationsDao.getLocationById(results.getInt("LocationId"))
+                );
+                jobsList.add(job);
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+        return jobsList;
+    }
+
 
 }

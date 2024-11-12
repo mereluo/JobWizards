@@ -91,7 +91,7 @@
 	        padding: 10px;
 	        font-size: 16px;
 	        border: 1px solid #ccc;
-	        border-radius: 25px 0 0 25px;
+	        border-radius: 0;
 	    }
 	    #searchButton {
 	        padding: 10px 20px;
@@ -236,6 +236,36 @@
 		    margin-right: 8px;
 		    font-size: 18px;
 		}
+		
+		.styled-dropdown {
+		    border: 1px solid #ccc;
+		    border-radius: 25px 0 0 25px;
+		    padding: 10px 15px;
+		    font-size: 16px;
+		    color: #555;
+		    background-color: #e0f4e0; /* Light green background */
+		    cursor: pointer;
+		    outline: none;
+		    appearance: none; /* Remove default dropdown arrow */
+		    margin-right: -1px; /* Ensures smooth transition between dropdown and input */
+		}
+		
+		.styled-dropdown:hover {
+		    background-color: #d0e7d0; /* Slightly darker green on hover */
+		}
+		
+		.styled-dropdown:focus {
+		    border-color: #4CAF50;
+		}
+		
+		/* Custom arrow for the dropdown */
+		.styled-dropdown::after {
+		    content: '\25BC';
+		    position: absolute;
+		    right: 15px;
+		    color: #777;
+		}
+		
 	</style>
 </head>
 
@@ -274,13 +304,54 @@
                 <a href="#">Git Repo</a>
             </div>
         </div>
+        
         <!-- Job Search Bar -->
-        <div id="jobSearchContainer">
+		<div id="jobSearchContainer">
+		    <form action="" method="post" style="display: inline-flex;">
+		        <!-- Styled Dropdown to select search type -->
+		        <select id="searchType" name="searchType" onchange="updateFormAction()" class="styled-dropdown">
+		            <option value="id">Search by ID</option>
+		            <option value="name">Search by Name</option>
+		        </select>
+		        
+		        <!-- Search input -->
+		        <input id="jobSearchBar" type="text" name="searchQuery" value="${fn:escapeXml(param.searchQuery)}" placeholder="Enter Job ID or Name" style="width: 300px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-left: none;">
+		        
+		        <!-- Submit button -->
+		        <button id="searchButton" type="submit" class="search-button">
+		            <i class="fas fa-search"></i> <!-- Magnifying glass icon -->
+		        </button>
+		      
+		    </form>
+		    
+		    
+		    
+		</div>
+
+		
+		<script>
+		    function updateFormAction() {
+		        const form = document.querySelector("form");
+		        const searchType = document.getElementById("searchType").value;
+		        
+		        if (searchType === "id") {
+		            form.action = "findjobs"; // Servlet for searching by ID
+		        } else if (searchType === "name") {
+		            form.action = "findjobsbyname"; // Servlet for searching by Name
+		        }
+		    }
+		
+		    // Set initial form action on page load
+		    window.onload = updateFormAction;
+		</script>
+		
+        
+<%--         <div id="jobSearchContainer">
             <form action="findjobs" method="post" style="display: inline-flex;">
                 <input id="jobSearchBar" type="text" name="jobId" value="${fn:escapeXml(param.jobId)}" placeholder="Enter Job ID">
                 <button id="searchButton" type="submit">Search</button>
             </form>
-        </div>
+        </div> --%>
     </div>
 
 

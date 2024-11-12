@@ -91,7 +91,7 @@
 	        padding: 10px;
 	        font-size: 16px;
 	        border: 1px solid #ccc;
-	        border-radius: 25px 0 0 25px;
+	        border-radius: 0;
 	    }
 	    #searchButton {
 	        padding: 10px 20px;
@@ -108,72 +108,69 @@
 	        transform: scale(1.05);
 	        transition: transform 0.3s, background-color 0.3s;
 	    }
-	    
-	    
 
-
-/* Styles for the preference cards */
-    .preferences-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 30px;
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    .preferences-container h2 {
-        color: #333;
-        text-align: center;
-    }
-    .card-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr); /* Three fixed columns */
-        gap: 20px; /* Consistent spacing between cards */
-        width: 100%;
-    }
-    .preference-card {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s, background-color 0.2s;
-    }
-    .preference-card:hover {
-        transform: scale(1.05);
-        background-color: #f0f9f0;
-    }
-    .preference-card.selected {
-        background-color: #e0f4e0;
-        border: 2px solid #4CAF50;
-    }
-    .preference-checkbox {
-        display: none;
-    }
-
-    /* Styling the submit button */
-    .submit-button-container {
-        text-align: center;
-        margin-top: 30px;
-    }
-    .submit-button {
-        padding: 12px 30px;
-        font-size: 18px;
-        font-weight: bold;
-        color: white;
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s, transform 0.3s;
-    }
-    .submit-button:hover {
-        background-color: #45a049;
-        transform: scale(1.1);
-    }
+	/* Styles for the preference cards */
+	    .preferences-container {
+	        display: flex;
+	        flex-direction: column;
+	        align-items: center;
+	        margin-top: 30px;
+	        width: 100%;
+	        max-width: 900px;
+	        margin: 0 auto;
+	    }
+	    .preferences-container h2 {
+	        color: #333;
+	        text-align: center;
+	    }
+	    .card-grid {
+	        display: grid;
+	        grid-template-columns: repeat(3, 1fr); /* Three fixed columns */
+	        gap: 20px; /* Consistent spacing between cards */
+	        width: 100%;
+	    }
+	    .preference-card {
+	        border: 1px solid #ddd;
+	        border-radius: 10px;
+	        padding: 20px;
+	        text-align: center;
+	        cursor: pointer;
+	        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	        transition: transform 0.2s, background-color 0.2s;
+	    }
+	    .preference-card:hover {
+	        transform: scale(1.05);
+	        background-color: #f0f9f0;
+	    }
+	    .preference-card.selected {
+	        background-color: #e0f4e0;
+	        border: 2px solid #4CAF50;
+	    }
+	    .preference-checkbox {
+	        display: none;
+	    }
+	
+	    /* Styling the submit button */
+	    .submit-button-container {
+	        text-align: center;
+	        margin-top: 30px;
+	    }
+	    .submit-button {
+	        padding: 12px 30px;
+	        font-size: 18px;
+	        font-weight: bold;
+	        color: white;
+	        background-color: #4CAF50;
+	        border: none;
+	        border-radius: 8px;
+	        cursor: pointer;
+	        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+	        transition: background-color 0.3s, transform 0.3s;
+	    }
+	    .submit-button:hover {
+	        background-color: #45a049;
+	        transform: scale(1.1);
+	    }
     
     		/* Center the job card and add margin for slight left positioning */
 		.job-card-container {
@@ -340,6 +337,35 @@
 		    border-radius: 5px;
 		    margin-right: 5px;
 		}
+		
+		.styled-dropdown {
+		    border: 1px solid #ccc;
+		    border-radius: 25px 0 0 25px;
+		    padding: 10px 15px;
+		    font-size: 16px;
+		    color: #555;
+		    background-color: #e0f4e0; /* Light green background */
+		    cursor: pointer;
+		    outline: none;
+		    appearance: none; /* Remove default dropdown arrow */
+		    margin-right: -1px; /* Ensures smooth transition between dropdown and input */
+		}
+		
+		.styled-dropdown:hover {
+		    background-color: #d0e7d0; /* Slightly darker green on hover */
+		}
+		
+		.styled-dropdown:focus {
+		    border-color: #4CAF50;
+		}
+		
+		/* Custom arrow for the dropdown */
+		.styled-dropdown::after {
+		    content: '\25BC';
+		    position: absolute;
+		    right: 15px;
+		    color: #777;
+		}
 
 
 </style>
@@ -392,12 +418,46 @@
             </div>
         </div>
         <!-- Job Search Bar -->
-        <div id="jobSearchContainer">
-            <form action="findjobs" method="post" style="display: inline-flex;">
-                <input id="jobSearchBar" type="text" name="jobId" value="${fn:escapeXml(param.jobId)}" placeholder="Enter Job ID">
-                <button id="searchButton" type="submit">Search</button>
-            </form>
-        </div>
+        
+        <!-- Job Search Bar -->
+		<div id="jobSearchContainer">
+		    <form action="" method="post" style="display: inline-flex;">
+		        <!-- Styled Dropdown to select search type -->
+		        <select id="searchType" name="searchType" onchange="updateFormAction()" class="styled-dropdown">
+		            <option value="id">Search by ID</option>
+		            <option value="name">Search by Name</option>
+		        </select>
+		        
+		        <!-- Search input -->
+		        <input id="jobSearchBar" type="text" name="searchQuery" value="${fn:escapeXml(param.searchQuery)}" placeholder="Enter Job ID or Name" style="width: 300px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-left: none;">
+		        
+		        <!-- Submit button -->
+		        <button id="searchButton" type="submit" class="search-button">
+		            <i class="fas fa-search"></i> <!-- Magnifying glass icon -->
+		        </button>
+		      
+		    </form>
+		    
+		    
+		    
+		</div>
+
+		
+		<script>
+		    function updateFormAction() {
+		        const form = document.querySelector("form");
+		        const searchType = document.getElementById("searchType").value;
+		        
+		        if (searchType === "id") {
+		            form.action = "findjobs"; // Servlet for searching by ID
+		        } else if (searchType === "name") {
+		            form.action = "findjobsbyname"; // Servlet for searching by Name
+		        }
+		    }
+		
+		    // Set initial form action on page load
+		    window.onload = updateFormAction;
+		</script>
     </div>
     <br></br>
 
@@ -469,7 +529,7 @@
 	    <div id="recommendedJobsContainer" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
 	       <c:forEach var="job" items="${jobList}">
 	           <div class="random-job-card" 
-	                onclick="window.location.href='findjobs?jobId=${job.jobId}'" 
+	                onclick="window.location.href='findjobs?searchQuery=${job.jobId}'" 
 	                style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; width: 280px; height: 250px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
 	                
 	            <!-- Title and Heart Icon Row -->

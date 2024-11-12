@@ -55,22 +55,4 @@ public class JobRecommendation extends HttpServlet {
 	    request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
 	}
 
-	
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String[] ratingCriteria = request.getParameterValues("ratingCriteria");
-//
-//        List<Jobs> jobList = null;
-//
-//        try {
-//            if (ratingCriteria != null) {
-//                jobList = jobsDao.getJobsByRating(ratingCriteria);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        request.setAttribute("jobList", jobList);
-//        request.setAttribute("ratingCriteria", ratingCriteria);
-//        request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
-//    }
 }
