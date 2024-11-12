@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,20 +33,44 @@ public class JobRecommendation extends HttpServlet {
         req.getRequestDispatcher("/JobRecommendation.jsp").forward(req, resp);
 	}
 	
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String[] ratingCriteria = request.getParameterValues("ratingCriteria");
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    String[] ratingCriteria = request.getParameterValues("ratingCriteria");
+	    
+	    System.out.println("Selected Rating Criteria: " + Arrays.toString(ratingCriteria));
 
-        List<Jobs> jobList = null;
+	    List<Jobs> jobList = null;
 
-        try {
-            if (ratingCriteria != null) {
-                jobList = jobsDao.getJobsByRating(ratingCriteria);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	    try {
+	        if (ratingCriteria != null) {
+	            jobList = jobsDao.getJobsByRating(ratingCriteria);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 
-        request.setAttribute("jobList", jobList);
-        request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
-    }
+	    // Add both jobList and ratingCriteria to the request scope
+	    request.setAttribute("jobList", jobList);
+	    request.setAttribute("ratingCriteria", ratingCriteria);
+
+	    request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
+	}
+
+	
+//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String[] ratingCriteria = request.getParameterValues("ratingCriteria");
+//
+//        List<Jobs> jobList = null;
+//
+//        try {
+//            if (ratingCriteria != null) {
+//                jobList = jobsDao.getJobsByRating(ratingCriteria);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        request.setAttribute("jobList", jobList);
+//        request.setAttribute("ratingCriteria", ratingCriteria);
+//        request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
+//    }
 }

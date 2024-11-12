@@ -173,7 +173,7 @@ public class JobsDao {
                     queryBuilder.append(", ");
                 }
             }
-            queryBuilder.append(" DESC Limit 10");
+            queryBuilder.append(" DESC Limit 12");
         }
 
         Connection connection = null;
@@ -215,4 +215,33 @@ public class JobsDao {
         }
         return jobsList;
     }
+    
+    public int getNextAvailableJobId() throws SQLException {
+        String selectMaxJobId = "SELECT MAX(JobId) AS MaxJobId FROM Jobs;";
+        Connection connection = null;
+        PreparedStatement selectStmt = null;
+        ResultSet results = null;
+        try {
+            connection = connectionManager.getConnection();
+            selectStmt = connection.prepareStatement(selectMaxJobId);
+            results = selectStmt.executeQuery();
+            if (results.next()) {
+                int maxJobId = results.getInt("MaxJobId");
+                return maxJobId + 1;
+            } else {
+                return 1; // If there are no jobs, start with JobId 1
+            }
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (selectStmt != null) {
+                selectStmt.close();
+            }
+            if (results != null) {
+                results.close();
+            }
+        }
+    }
+
 }

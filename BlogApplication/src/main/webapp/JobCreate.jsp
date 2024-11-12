@@ -238,10 +238,6 @@
 			            <div class="section-title">Info</div>
 			            <div class="form-section">
 			                <div class="form-group">
-			                    <label for="jobId">Job ID</label>
-			                    <input id="jobId" name="jobId" value="" required>
-			                </div>
-			                <div class="form-group">
 			                    <label for="title">Title</label>
 			                    <input id="title" name="title" value="" required>
 			                </div>
