@@ -25,6 +25,7 @@ public class JobRecommendation extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		req.setAttribute("currentPage", "jobrecommendation");
 		// Map for storing messages.
         Map<String, String> messages = new HashMap<String, String>();
         req.setAttribute("messages", messages);
@@ -34,6 +35,7 @@ public class JobRecommendation extends HttpServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("currentPage", "jobrecommendation");
 	    String[] ratingCriteria = request.getParameterValues("ratingCriteria");
 	    
 	    System.out.println("Selected Rating Criteria: " + Arrays.toString(ratingCriteria));
@@ -51,6 +53,7 @@ public class JobRecommendation extends HttpServlet {
 	    // Add both jobList and ratingCriteria to the request scope
 	    request.setAttribute("jobList", jobList);
 	    request.setAttribute("ratingCriteria", ratingCriteria);
+	    
 
 	    request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
 	}

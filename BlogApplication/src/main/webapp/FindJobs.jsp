@@ -270,18 +270,10 @@
 </head>
 
 <body>
-    <!-- Header Section -->
-    <div id="header">
-        <div id="logo">
-            <img src="/BlobApplication2/pic/jwLogo2.PNG" alt="Logo" height="150px">
-            <img src="/BlobApplication2/pic/jwLogo.PNG" alt="Logo" height="150px">
-        </div>
-    </div>
-
     <!-- Navigation Bar -->
     <div id="navbar">
         <div id="logo">
-            <img src="/BlobApplication2/pic/jwLogo.PNG" alt="Jobwizard Logo" height="50px">
+            <img src="https://photos.hebo.life/application/thumb.php?img=/i/2024/11/13/6wcu7z.jpg" alt="Logo" height="70px">
         </div>
         <div class="nav-item">
             <a href="jobwizards">Main</a>
@@ -301,7 +293,7 @@
             <a href="#">About Us  <i class="fas fa-chevron-down"></i></a>
             <div class="dropdown-content">
                 <a href="#">Team</a>
-                <a href="#">Git Repo</a>
+                <a href="https://github.com/mereluo/JobWizards" target="_blank">Git Repo</a>
             </div>
         </div>
         

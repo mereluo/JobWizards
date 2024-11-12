@@ -58,6 +58,7 @@
 	        background-color: #e0f4e0;
 	        border-radius: 10px;
 	    }
+	    
 	    .dropdown-content {
 	        display: none;
 	        position: absolute;
@@ -383,38 +384,31 @@
 </head>
 
 <body>
-    <!-- Header Section -->
-    <div id="header">
-        <div id="logo">
-            <img src="/BlobApplication2/pic/jwLogo2.PNG" alt="Logo" height="150px">
-            <img src="/BlobApplication2/pic/jwLogo.PNG" alt="Logo" height="150px">
-        </div>
-    </div>
-
     <!-- Navigation Bar -->
     <div id="navbar">
         <div id="logo">
-            <img src="/BlobApplication2/pic/jwLogo.PNG" alt="Jobwizard Logo" height="50px">
+            <img src="https://photos.hebo.life/application/thumb.php?img=/i/2024/11/13/6wcu7z.jpg" alt="Logo" height="70px">
         </div>
         <div class="nav-item">
             <a href="jobwizards">Main</a>
         </div>
-		<div class="nav-item ${currentPage == 'jobcreate' ? 'active' : ''}">
-		    <a href="#">Create New <i class="fas fa-chevron-down"></i></a>
-		    <div class="dropdown-content">
-		        <a href="jobcreate">Job</a>
-		        <a href="#">Company</a>
-		        <a href="#">Review</a>
-		    </div>
-		</div>
         <div class="nav-item">
-            <a href="jobrecommendation">Job Recommendation</a>
+            <a href="#">Create New <i class="fas fa-chevron-down"></i></a>
+            <div class="dropdown-content">
+                <a href="jobcreate">Job</a>
+                <a href="#">Company</a>
+                <a href="#">Review</a>
+            </div>
         </div>
+<div class="nav-item ${currentPage == 'jobrecommendation' ? 'active' : ''}">
+    <a href="jobrecommendation">Job Recommendation</a>
+</div>
+
         <div class="nav-item">
             <a href="#">About Us  <i class="fas fa-chevron-down"></i></a>
             <div class="dropdown-content">
                 <a href="#">Team</a>
-                <a href="#">Git Repo</a>
+                <a href="https://github.com/mereluo/JobWizards" target="_blank">Git Repo</a>
             </div>
         </div>
         <!-- Job Search Bar -->
@@ -459,7 +453,6 @@
 		    window.onload = updateFormAction;
 		</script>
     </div>
-    <br></br>
 
 	<div class="preferences-container">
 	    <h2>Select Your Preferences:</h2>
