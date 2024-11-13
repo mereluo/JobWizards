@@ -484,8 +484,8 @@
 	                Senior Management
 	            </div>
 	            <div class="preference-card" onclick="toggleCard(this)">
-	                <input type="checkbox" class="preference-checkbox" name="ratingCriteria" value="RatingForWorkLifeBalance"
-	                    <c:if test="${ratingCriteria != null && fn:contains(ratingCriteria, 'RatingForWorkLifeBalance')}">checked</c:if>>
+	                <input type="checkbox" class="preference-checkbox" name="ratingCriteria" value="RatingForWorkLifeBalanace"
+	                    <c:if test="${ratingCriteria != null && fn:contains(ratingCriteria, 'RatingForWorkLifeBalanace')}">checked</c:if>>
 	                Work-Life Balance
 	            </div>
 	        </div>
@@ -507,7 +507,7 @@
 	                    <c:when test="${criteria == 'RatingForCompBenefits'}">Company Benefits</c:when>
 	                    <c:when test="${criteria == 'RatingForCultureValues'}">Culture and Values</c:when>
 	                    <c:when test="${criteria == 'RatingForSeniorManagement'}">Senior Management</c:when>
-	                    <c:when test="${criteria == 'RatingForWorkLifeBalance'}">Work-Life Balance</c:when>
+	                    <c:when test="${criteria == 'RatingForWorkLifeBalanace'}">Work-Life Balance</c:when>
 	                    <c:otherwise>${criteria}</c:otherwise>
 	                </c:choose>
 	            </span>
