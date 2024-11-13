@@ -367,8 +367,8 @@
 		    right: 15px;
 		    color: #777;
 		}
-
-		/*Styles for job title input*/
+		
+				/*Styles for job title input*/
 		.job-title-input {
 		    display: flex;
 		    align-items: center;
@@ -390,7 +390,8 @@
 		    width: 40%;
 		    font-size: 16px;
 		}
-				
+
+
 </style>
 
 
@@ -477,9 +478,9 @@
     </div>
 
 	<div class="preferences-container">
-	    <h2>Select Your Preferences:</h2>
+	    <h2>Select Your Preferences</h2>
 	    <form action="jobrecommendation" method="post">
-			<div class="job-title-input">
+	    	<div class="job-title-input">
 			    <label for="jobTitle">Job Title Contains:</label>
 			    <input type="text" id="jobTitle" name="jobTitle" value="${jobTitle != null ? jobTitle[0] : ''}">
 			</div>

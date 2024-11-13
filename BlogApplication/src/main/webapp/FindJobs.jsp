@@ -151,6 +151,7 @@
 	        width: 300px; /* Fixed width for consistent alignment */
 	        text-align: left; /* Align label and value to the left */
 	    }
+
 	    .job-details-item label {
 	        font-size: 14px; /* Slightly smaller font size for label */
 	        color: #555; /* Gray color for label text */
@@ -266,6 +267,38 @@
 		    color: #777;
 		}
 		
+		
+		 .edit-icon {
+		   cursor: pointer;
+		   margin-left: 5px;
+		   color: #66cdaa; /* Light green color for the icon */
+		 }
+		
+		 .edit-icon:hover {
+		   color: #2ea62e; /* Slightly darker green for hover effect */
+		 }
+		
+		  .input-container {
+		    display: flex;
+		    align-items: center;
+		  }
+		
+		  .confirm-icon {
+		    cursor: pointer;
+		    margin-left: 5px;
+		    color: #28a745; /* Green color for the confirm icon */
+		  }
+		
+		  .confirm-icon:hover {
+		    color: #218838; /* Darker green for hover */
+		  }
+		
+		  label {
+		    margin-right: 10px;
+		    display: flex;
+		    align-items: center;
+		  }
+		
 	</style>
 </head>
 
@@ -337,13 +370,6 @@
 		    window.onload = updateFormAction;
 		</script>
 		
-        
-<%--         <div id="jobSearchContainer">
-            <form action="findjobs" method="post" style="display: inline-flex;">
-                <input id="jobSearchBar" type="text" name="jobId" value="${fn:escapeXml(param.jobId)}" placeholder="Enter Job ID">
-                <button id="searchButton" type="submit">Search</button>
-            </form>
-        </div> --%>
     </div>
 
 
@@ -358,35 +384,170 @@
 						<div><b><c:out value="${job.title}" /></b></div>
 		            </div>
 		
-		            <!-- Details Section -->
-		            <div class="section-title">Job Details</div>
-		            <div class="job-details">
-		                <div class="job-details-item">
-		                    <label>AdvertiserType</label>
-		                    <span><c:out value="${job.advertiserType}" /></span>
-		                </div>
-		                <div class="job-details-item">
-		                    <label>ApplyButtonDisabled</label>
-		                    <span><c:out value="${job.applyButtonDisabled}" /></span>
-		                </div>
-		                <div class="job-details-item">
-		                    <label>EasyApply</label>
-		                    <span><c:out value="${job.easyApply}" /></span>
-		                </div>
-		                <div class="job-details-item">
-		                    <label>PostedDate</label>
-		                    <span><c:out value="${job.postedDate}" /></span>
-		                </div>
-		                <div class="job-details-item">
-		                    <label>Rating</label>
-		                    <span><c:out value="${job.rating}" /></span>
-		                </div>
-		                <div class="job-details-item">
-		                    <label>Source</label>
-		                    <span><c:out value="${job.source}" /></span>
-		                </div>
-		            </div>
-		
+					<!-- Details Section -->
+					<div class="section-title">Job Details</div>
+					<div class="job-details">
+						<input type="hidden" id="jobIdValue" value="${job.jobId}" /> <!-- Hidden field for job ID -->
+					
+					    <div class="job-details-item">
+					        <label>AdvertiserType <i class="fas fa-edit edit-icon" onclick="editJobDetail('advertiserTypeValue')"></i></label>
+					        <span id="advertiserTypeValue"><c:out value="${job.advertiserType}" /></span>
+					    </div>
+					    <div class="job-details-item">
+						    <label>ApplyButtonDisabled <i class="fas fa-edit edit-icon" onclick="editJobDetail('applyButtonDisabledValue')"></i></label>
+						    <span id="applyButtonDisabledValue"><c:out value="${job.applyButtonDisabled}" /></span>
+						</div>
+						<div class="job-details-item">
+						    <label>EasyApply <i class="fas fa-edit edit-icon" onclick="editJobDetail('easyApplyValue')"></i></label>
+						    <span id="easyApplyValue"><c:out value="${job.easyApply}" /></span>
+						</div>
+					    <div class="job-details-item">
+					        <label>PostedDate <i class="fas fa-edit edit-icon" onclick="editJobDetail('postedDateValue')"></i></label>
+					        <span id="postedDateValue"><c:out value="${job.postedDate}" /></span>
+					    </div>
+					    <div class="job-details-item">
+						    <label>Rating <i class="fas fa-edit edit-icon" onclick="editJobDetail('ratingValue')"></i></label>
+						    <span id="ratingValue"><c:out value="${job.rating}" /></span>
+						</div>
+					    <div class="job-details-item">
+					        <label>Source <i class="fas fa-edit edit-icon" onclick="editJobDetail('sourceValue')"></i></label>
+					        <span id="sourceValue"><c:out value="${job.source}" /></span>
+					    </div>
+					</div>
+					
+					
+
+					<script>
+					function editJobDetail(elementId) {
+					    const valueElement = document.getElementById(elementId);
+					    const currentValue = valueElement.textContent.trim();
+
+					    let inputField;
+
+					    if (elementId === "applyButtonDisabledValue" || elementId === "easyApplyValue") {
+					        // Create a dropdown select field for boolean values
+					        inputField = document.createElement("select");
+					        inputField.id = elementId + "Input";
+
+					        const trueOption = document.createElement("option");
+					        trueOption.value = "true";
+					        trueOption.textContent = "true";
+					        inputField.appendChild(trueOption);
+
+					        const falseOption = document.createElement("option");
+					        falseOption.value = "false";
+					        falseOption.textContent = "false";
+					        inputField.appendChild(falseOption);
+
+					        // Set current value as selected
+					        inputField.value = currentValue.toLowerCase();
+					    } else if (elementId === "ratingValue") {
+					        // Create an input field for rating, which should be a decimal value
+					        inputField = document.createElement("input");
+					        inputField.type = "number";
+					        inputField.step = "0.01"; // Allow decimals to 2 places
+					        inputField.min = "0"; // Minimum rating
+					        inputField.max = "5"; // Maximum rating
+					        inputField.value = currentValue;
+					        inputField.id = elementId + "Input";
+					        
+					        // Adding event listener to restrict input programmatically if the field allows typing more than the max value
+					        inputField.addEventListener("input", function() {
+					            if (parseFloat(inputField.value) > 5) {
+					                inputField.value = "5";
+					            } else if (parseFloat(inputField.value) < 0) {
+					                inputField.value = "0";
+					            }
+					        });
+					    } else {
+					        // Create an input field for text values
+					        inputField = document.createElement("input");
+					        inputField.type = "text";
+					        inputField.value = currentValue;
+					        inputField.id = elementId + "Input";
+					    }
+
+					    // Create a confirm button (checkmark icon)
+					    const confirmButton = document.createElement("i");
+					    confirmButton.className = "fas fa-check confirm-icon";
+					    confirmButton.onclick = function () {
+					      saveJobDetail(elementId, inputField.value);
+					    };
+
+					    // Create a container for input and confirm button
+					    const inputContainer = document.createElement("div");
+					    inputContainer.className = "input-container";
+					    inputContainer.appendChild(inputField);
+					    inputContainer.appendChild(confirmButton);
+
+					    // Replace the value element with the input container
+					    valueElement.parentNode.replaceChild(inputContainer, valueElement);
+
+					    // Set focus on the input field for quick editing
+					    inputField.focus();
+					  }
+					
+					  function saveJobDetail(elementId, newValue) {
+						  try {
+						      const inputContainer = document.getElementById(elementId + "Input").parentNode;
+
+						      // Create a new span element with the updated value
+						      const newValueElement = document.createElement("span");
+						      newValueElement.id = elementId;
+						      newValueElement.textContent = newValue;
+
+						      // Replace the input field with the updated value element in the UI
+						      inputContainer.parentNode.replaceChild(newValueElement, inputContainer);
+
+						      // Create a form dynamically to submit the data (similar to the title update)
+						      const form = document.createElement("form");
+						      form.method = "POST";
+						      form.action = "jobupdate";
+						      form.target = "hidden_iframe"; // Target the hidden iframe for seamless submission
+
+						      // Extract the jobId from a data attribute or another source (assuming there's a jobId element or field)
+						      const jobId = document.getElementById("jobIdValue").value;
+
+						      if (!jobId) {
+						          throw new Error("Job ID is not available. Cannot update the job detail.");
+						      }
+
+						      // Create hidden fields for jobId and the updated detail
+						      const jobIdField = document.createElement("input");
+						      jobIdField.type = "hidden";
+						      jobIdField.name = "jobId";
+						      jobIdField.value = jobId;
+						      form.appendChild(jobIdField);
+
+						      // Create a hidden field for the updated detail
+						      const fieldName = elementId.replace('Value', ''); // Extract the field name (e.g., advertiserType)
+						      const fieldValueField = document.createElement("input");
+						      fieldValueField.type = "hidden";
+						      fieldValueField.name = fieldName; // The name should match what the server expects (e.g., "advertiserType")
+						      fieldValueField.value = newValue;
+						      form.appendChild(fieldValueField);
+
+						      // Append the form to the body and submit it
+						      document.body.appendChild(form);
+						      form.submit();
+
+						      // Show success message after submission
+						      alert(fieldName + " updated successfully.");
+
+						      // Remove the form after submission to clean up
+						      document.body.removeChild(form);
+						  } catch (error) {
+						      console.error("Error updating job detail:", error.message);
+						      alert("Failed to update job detail. Please try again.");
+						  }
+						}
+
+					</script>
+					
+					
+					
+					
+							
 		            <div class="section-title">Other</div>
 		            <div class="job-details">
 		                <div class="job-details-item">
@@ -407,6 +568,8 @@
 		                </div>
 		                
 		            </div>
+
+
 		            
 	                <!-- Reviews Section -->
 					<div class="section-title">Reviews</div>
@@ -490,7 +653,7 @@
 			        </a>
 							        
 					<a href="javascript:void(0);" onclick="promptForTitle('${job.jobId}')" class="action-item">
-					    <i class="fas fa-pen"></i> Edit
+					    <i class="fas fa-pen"></i> Edit Title
 					</a>
 					<!-- Invisible iframe to handle the form submission in the background -->
 					<iframe name="hidden_iframe" style="display:none;"></iframe>

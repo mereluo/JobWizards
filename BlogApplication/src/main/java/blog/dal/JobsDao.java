@@ -77,6 +77,145 @@ public class JobsDao {
             }
         }
     }
+    
+ // Update AdvertiserType
+    public Jobs updateAdvertiserType(Jobs job, String newAdvertiserType) throws SQLException {
+        String updateJob = "UPDATE Jobs SET AdvertiserType=? WHERE JobId=?;";
+        Connection connection = null;
+        PreparedStatement updateStmt = null;
+        try {
+            connection = connectionManager.getConnection();
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setString(1, newAdvertiserType);
+            updateStmt.setInt(2, job.getJobId());
+            updateStmt.executeUpdate();
+            job.setAdvertiserType(newAdvertiserType);
+            return job;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (updateStmt != null) {
+                updateStmt.close();
+            }
+        }
+    }
+
+    // Update ApplyButtonDisabled
+    public Jobs updateApplyButtonDisabled(Jobs job, boolean newApplyButtonDisabled) throws SQLException {
+        String updateJob = "UPDATE Jobs SET ApplyButtonDisabled=? WHERE JobId=?;";
+        Connection connection = null;
+        PreparedStatement updateStmt = null;
+        try {
+            connection = connectionManager.getConnection();
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setBoolean(1, newApplyButtonDisabled);
+            updateStmt.setInt(2, job.getJobId());
+            updateStmt.executeUpdate();
+            job.setApplyButtonDisabled(newApplyButtonDisabled);
+            return job;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (updateStmt != null) {
+                updateStmt.close();
+            }
+        }
+    }
+
+    // Update EasyApply
+    public Jobs updateEasyApply(Jobs job, boolean newEasyApply) throws SQLException {
+        String updateJob = "UPDATE Jobs SET EasyApply=? WHERE JobId=?;";
+        Connection connection = null;
+        PreparedStatement updateStmt = null;
+        try {
+            connection = connectionManager.getConnection();
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setBoolean(1, newEasyApply);
+            updateStmt.setInt(2, job.getJobId());
+            updateStmt.executeUpdate();
+            job.setEasyApply(newEasyApply);
+            return job;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (updateStmt != null) {
+                updateStmt.close();
+            }
+        }
+    }
+
+    // Update PostedDate
+    public Jobs updatePostedDate(Jobs job, String newPostedDate) throws SQLException {
+        String updateJob = "UPDATE Jobs SET PostedDate=? WHERE JobId=?;";
+        Connection connection = null;
+        PreparedStatement updateStmt = null;
+        try {
+            connection = connectionManager.getConnection();
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setString(1, newPostedDate);
+            updateStmt.setInt(2, job.getJobId());
+            updateStmt.executeUpdate();
+            job.setPostedDate(newPostedDate);
+            return job;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (updateStmt != null) {
+                updateStmt.close();
+            }
+        }
+    }
+
+    // Update Rating
+    public Jobs updateRating(Jobs job, BigDecimal newRating) throws SQLException {
+        String updateJob = "UPDATE Jobs SET Rating=? WHERE JobId=?;";
+        Connection connection = null;
+        PreparedStatement updateStmt = null;
+        try {
+            connection = connectionManager.getConnection();
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setBigDecimal(1, newRating);
+            updateStmt.setInt(2, job.getJobId());
+            updateStmt.executeUpdate();
+            job.setRating(newRating);
+            return job;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (updateStmt != null) {
+                updateStmt.close();
+            }
+        }
+    }
+
+    // Update Source
+    public Jobs updateSource(Jobs job, String newSource) throws SQLException {
+        String updateJob = "UPDATE Jobs SET Source=? WHERE JobId=?;";
+        Connection connection = null;
+        PreparedStatement updateStmt = null;
+        try {
+            connection = connectionManager.getConnection();
+            updateStmt = connection.prepareStatement(updateJob);
+            updateStmt.setString(1, newSource);
+            updateStmt.setInt(2, job.getJobId());
+            updateStmt.executeUpdate();
+            job.setSource(newSource);
+            return job;
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+            if (updateStmt != null) {
+                updateStmt.close();
+            }
+        }
+    }
+
 
     public Jobs delete(Jobs job) throws SQLException {
         String deleteJob = "DELETE FROM Jobs WHERE JobId=?;";
@@ -154,14 +293,14 @@ public class JobsDao {
                 queryBuilder.append(", ");
             }
         }
+
         // Join tables, add job title filter, and group by jobs
         queryBuilder.append(" FROM Jobs j ")
-        			.append("JOIN Reviews r ON j.JobId = r.JobId ");
-        if (jobTitle != null && jobTitle.length > 0) 
-        	queryBuilder.append("WHERE j.Title LIKE '%").append(jobTitle[0]).append("%' ");
-        			
-        queryBuilder.append("GROUP BY j.JobId, j.Title, j.AdvertiserType, j.ApplyButtonDisabled, ")
-                    .append("j.EasyApply, j.PostedDate, j.Rating, j.Source, j.CompanyId, j.LocationId ");
+					.append("JOIN Reviews r ON j.JobId = r.JobId ");
+			if (jobTitle != null && jobTitle.length > 0) 
+				queryBuilder.append("WHERE j.Title LIKE '%").append(jobTitle[0]).append("%' ");	
+				queryBuilder.append("GROUP BY j.JobId, j.Title, j.AdvertiserType, j.ApplyButtonDisabled, ")
+	                    	.append("j.EasyApply, j.PostedDate, j.Rating, j.Source, j.CompanyId, j.LocationId ");
 
         // Order by the specified criteria averages
         if (ratingCriteria != null && ratingCriteria.length > 0) {
@@ -182,7 +321,6 @@ public class JobsDao {
         LocationsDao locationsDao = LocationsDao.getInstance();
         try {
             connection = connectionManager.getConnection();
-            System.out.println("query: " + queryBuilder.toString());
             selectStmt = connection.prepareStatement(queryBuilder.toString());
             results = selectStmt.executeQuery();
             
