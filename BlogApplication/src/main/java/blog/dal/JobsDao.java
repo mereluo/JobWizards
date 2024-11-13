@@ -140,7 +140,7 @@ public class JobsDao {
         return null;
     }
     
-    public List<Jobs> getJobsByRating(String[] ratingCriteria) throws SQLException {
+    public List<Jobs> getJobsByRating(String[] ratingCriteria, String[] jobTitle) throws SQLException {
         List<Jobs> jobsList = new ArrayList<>();
         
         StringBuilder queryBuilder = new StringBuilder();
@@ -148,20 +148,19 @@ public class JobsDao {
                     .append("j.EasyApply, j.PostedDate, j.Rating, j.Source, j.CompanyId, j.LocationId, ");
 
         // Add average ratings for selected criteria
-        if (ratingCriteria != null && ratingCriteria.length > 0) {
-            for (int i = 0; i < ratingCriteria.length; i++) {
-                queryBuilder.append("AVG(r.").append(ratingCriteria[i]).append(") AS avg_").append(ratingCriteria[i]);
-                if (i < ratingCriteria.length - 1) {
-                    queryBuilder.append(", ");
-                }
+        for (int i = 0; i < ratingCriteria.length; i++) {
+            queryBuilder.append("AVG(r.").append(ratingCriteria[i]).append(") AS avg_").append(ratingCriteria[i]);
+            if (i < ratingCriteria.length - 1) {
+                queryBuilder.append(", ");
             }
-        } else {
-            queryBuilder.append("AVG(r.ratingForOverall) AS avg_ratingForOverall"); // Default to overall rating if no criteria selected
         }
-
+        // Join tables, add job title filter, and group by jobs
         queryBuilder.append(" FROM Jobs j ")
-                    .append("JOIN Reviews r ON j.JobId = r.JobId ")
-                    .append("GROUP BY j.JobId, j.Title, j.AdvertiserType, j.ApplyButtonDisabled, ")
+        			.append("JOIN Reviews r ON j.JobId = r.JobId ");
+        if (jobTitle != null && jobTitle.length > 0) 
+        	queryBuilder.append("WHERE j.Title LIKE '%").append(jobTitle[0]).append("%' ");
+        			
+        queryBuilder.append("GROUP BY j.JobId, j.Title, j.AdvertiserType, j.ApplyButtonDisabled, ")
                     .append("j.EasyApply, j.PostedDate, j.Rating, j.Source, j.CompanyId, j.LocationId ");
 
         // Order by the specified criteria averages
@@ -183,6 +182,7 @@ public class JobsDao {
         LocationsDao locationsDao = LocationsDao.getInstance();
         try {
             connection = connectionManager.getConnection();
+            System.out.println("query: " + queryBuilder.toString());
             selectStmt = connection.prepareStatement(queryBuilder.toString());
             results = selectStmt.executeQuery();
             

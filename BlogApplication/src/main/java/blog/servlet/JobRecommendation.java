@@ -34,18 +34,20 @@ public class JobRecommendation extends HttpServlet {
         req.getRequestDispatcher("/JobRecommendation.jsp").forward(req, resp);
 	}
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("currentPage", "jobrecommendation");
 	    String[] ratingCriteria = request.getParameterValues("ratingCriteria");
+	    if (ratingCriteria == null) 
+	    	ratingCriteria = new String[] {"RatingForOverall"};
+	    String[] jobTitle = request.getParameterValues("jobTitle");
 	    
 	    System.out.println("Selected Rating Criteria: " + Arrays.toString(ratingCriteria));
-
+	    System.out.println("Selected job title: " + Arrays.toString(jobTitle));
 	    List<Jobs> jobList = null;
-
+	    
 	    try {
-	        if (ratingCriteria != null) {
-	            jobList = jobsDao.getJobsByRating(ratingCriteria);
-	        }
+	    	jobList = jobsDao.getJobsByRating(ratingCriteria, jobTitle);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
@@ -53,7 +55,7 @@ public class JobRecommendation extends HttpServlet {
 	    // Add both jobList and ratingCriteria to the request scope
 	    request.setAttribute("jobList", jobList);
 	    request.setAttribute("ratingCriteria", ratingCriteria);
-	    
+	    request.setAttribute("jobTitle", jobTitle);
 
 	    request.getRequestDispatcher("/JobRecommendation.jsp").forward(request, response);
 	}

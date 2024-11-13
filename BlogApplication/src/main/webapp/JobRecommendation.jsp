@@ -368,7 +368,29 @@
 		    color: #777;
 		}
 
-
+		/*Styles for job title input*/
+		.job-title-input {
+		    display: flex;
+		    align-items: center;
+		    gap: 10px; /* Adds space between the label and input */
+		    margin-bottom: 20px;
+		    font-size: 18px;
+		    color: #555;
+		}
+		
+		.job-title-input label {
+		    display: block;
+		    font-weight: bold;
+		}
+		
+		.job-title-input input {
+		    padding: 8px;
+		    border: 1px solid #ccc;
+		    border-radius: 5px;
+		    width: 40%;
+		    font-size: 16px;
+		}
+				
 </style>
 
 
@@ -457,6 +479,10 @@
 	<div class="preferences-container">
 	    <h2>Select Your Preferences:</h2>
 	    <form action="jobrecommendation" method="post">
+			<div class="job-title-input">
+			    <label for="jobTitle">Job Title Contains:</label>
+			    <input type="text" id="jobTitle" name="jobTitle" value="${jobTitle != null ? jobTitle[0] : ''}">
+			</div>
 	        <div class="card-grid">
 	            <div class="preference-card" onclick="toggleCard(this)">
 	                <input type="checkbox" class="preference-checkbox" name="ratingCriteria" value="RatingForOverall"
@@ -496,9 +522,14 @@
 	</div>
 
 	
-	<c:if test="${not empty ratingCriteria}">
+	<c:if test="${not empty ratingCriteria || not empty jobTitle}">
 	    <div class="selected-criteria-container">
 	        <p>Selected Criteria:</p>
+	        <c:if test="${not empty jobTitle}">
+	            <c:forEach var="title" items="${jobTitle}">
+	                <span class="selected-criteria-list">${title}</span>
+	            </c:forEach>
+        	</c:if>
 	        <c:forEach var="criteria" items="${ratingCriteria}">
 	            <span class="selected-criteria-list">
 	                <c:choose>

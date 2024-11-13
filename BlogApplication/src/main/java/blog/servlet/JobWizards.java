@@ -37,7 +37,8 @@ public class JobWizards extends HttpServlet {
 	        // Default rating criteria for recommendations
 	    	System.out.println("Not null");
 	        String[] ratingCriteria = {"RatingForOverall"};
-	        jobList = jobsDao.getJobsByRating(ratingCriteria);
+	        String[] jobTitle = new String[0];
+	        jobList = jobsDao.getJobsByRating(ratingCriteria, jobTitle);
 	        if (jobList.size() > 9) {
 	            jobList = jobList.subList(0, 9); // Keeps only the first 9 elements since I need 9 cards
 	        }
@@ -59,7 +60,8 @@ public class JobWizards extends HttpServlet {
         try {
             if (ratingCriteria != null) {
             	System.out.println("Not null");
-                jobList = jobsDao.getJobsByRating(ratingCriteria);
+            	String[] jobTitle = new String[0];
+                jobList = jobsDao.getJobsByRating(ratingCriteria, jobTitle);
                 for (Jobs job : jobList) {
                     System.out.println(job);
                 }
