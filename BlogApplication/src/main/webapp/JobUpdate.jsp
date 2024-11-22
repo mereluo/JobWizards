@@ -8,26 +8,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Create a User</title>
+<title>Update a Job</title>
 </head>
 <body>
-	<h1>Create BLOGUSERr</h1>
-	<form action="usercreate" method="post">
+	<h1>Update Job</h1>
+	<form action="jobupdate" method="post">
 		<p>
-			<label for="username">UserName</label>
-			<input id="username" name="username" value="">
+			<label for="jobId">JobId</label>
+			<input id="jobId" name="jobId" value="${fn:escapeXml(param.username)}">
 		</p>
 		<p>
-			<label for="firstname">FirstName</label>
-			<input id="firstname" name="firstname" value="">
-		</p>
-		<p>
-			<label for="lastname">LastName</label>
-			<input id="lastname" name="lastname" value="">
-		</p>
-		<p>
-			<label for="dob">DoB (yyyy-mm-dd)</label>
-			<input id="dob" name="dob" value="">
+			<label for="title">New title</label>
+			<input id="title" name="title" value="">
 		</p>
 		<p>
 			<input type="submit">
